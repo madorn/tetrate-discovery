@@ -27,7 +27,7 @@ fi
 installCertManager
 OCP_DOMAIN=$(oc get ingresses.config/cluster -o jsonpath={.spec.domain})
 
-kubectl wait -n cert-manager --for=condition=Available --timeout=4m deployment/cert-manager-webhook 2>/dev/null
+kubectl wait -n openshift-cert-manager --for=condition=Available --timeout=4m deployment/cert-manager-webhook 2>/dev/null
 
 eval "echo \"$(cat "$ROOT"/templates/mgmntplane-cr-base.yaml)\"" >/tmp/mgmntplane-cr.yaml
 
