@@ -7,3 +7,13 @@ metadata:
 spec:
   hub: $REPO_MP
   organization: $ORG
+  dataStore:
+    postgres:
+      host: $(kubectl -n openshift-operators get secrets tsb-pguser-tsb -o go-template='{{.data.host | base64decode}}')
+      port: $(kubectl -n openshift-operators get secrets tsb-pguser-tsb -o go-template='{{.data.port | base64decode}}')
+      name: $(kubectl -n openshift-operators get secrets tsb-pguser-tsb -o go-template='{{.data.dbname | base64decode}}')
+  telemetryStore:
+    elastic:
+      host: oc -n openshift-operators get svc elasticsearch-sample-es-http -o go-template='{{.spec.clusterIP}}'
+      port: 9200
+      version: 8.4.0
