@@ -14,6 +14,6 @@ spec:
       name: $(kubectl -n openshift-operators get secrets tsb-pguser-tsb -o go-template='{{.data.dbname | base64decode}}')
   telemetryStore:
     elastic:
-      host: $(kubectl-n openshift-operators get svc elasticsearch-sample-es-http -o go-template='{{.spec.clusterIP}}')
+      host: $(kubectl -n openshift-operators get svc elasticsearch-sample-es-http -o go-template='{{.spec.clusterIP}}')
       port: 9200
       version: 8.4.0
