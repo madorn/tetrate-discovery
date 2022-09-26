@@ -13,7 +13,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-        image: quay.io/jetstack/cert-manager-controller:v1.7.2
+        image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel8@sha256:988870161bbc56ad2793b8563eb0ddb00c4e108b0d6bd604602c67ff4ff88ae8
         imagePullPolicy: IfNotPresent
         name: cert-manager
         ports:
