@@ -225,19 +225,19 @@ function createAWSCluster() {
 function installCertManager() {
     echo "Install cert manager" >&2
     
-    if ! kubectl -n cert-manager rollout status deployment/cert-manager 2>/dev/null;
-    then
-        kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.7.2/cert-manager.yaml 2>/dev/null
-        kubectl --namespace cert-manager create secret generic prod-route53-credentials-secret \
-        --from-literal="secret-access-key=$ROUTE53_SECRET" 2>/dev/null
-    else
-        echo "Cert Manager Deployment already exists" >&2
-    fi
+#    if ! kubectl -n openshift-cert-manager rollout status deployment/cert-manager 2>/dev/null;
+#   then
+#       kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.7.2/cert-manager.yaml 2>/dev/null
+#       kubectl --namespace cert-manager create secret generic prod-route53-credentials-secret \
+#       --from-literal="secret-access-key=$ROUTE53_SECRET" 2>/dev/null
+#    else
+#        echo "Cert Manager Deployment already exists" >&2
+#    fi
     echo "adding flag for ExperimentalCertificateSigningRequestControllers" >&2
-    kubectl -n cert-manager patch deployments.apps/cert-manager \
+    kubectl -n openshift-cert-manager patch deployments.apps/cert-manager \
     --type merge \
     --patch "$(cat "$ROOT"/templates/cert-manager-flags.yaml)" >/dev/null 2>/dev/null
-    kubectl rollout restart deployment -n cert-manager >/dev/null 2>/dev/null
+    kubectl rollout restart deployment -n openshift-cert-manager >/dev/null 2>/dev/null
 }
 function installECK() {
     echo "Deploying Elastic Cloud on Kubernetes (ECK)" >&2
