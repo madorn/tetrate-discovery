@@ -48,8 +48,8 @@ if ! kubectl -n "$TSB_NS" rollout status deployment/envoy 2>/dev/null; then
     --elastic-username elastic \
     --ldap-bind-dn cn=admin,dc=tetrate,dc=io \
     --ldap-bind-password admin \
-    --postgres-password tsb-postgres-password \
-    --postgres-username tsb \
+    --postgres-password $(kubectl -n openshift-operators get secrets tsb-pguser-tsb -o go-template='{{.data.password | base64decode}}') \
+    --postgres-username $(kubectl -n openshift-operators get secrets tsb-pguser-tsb -o go-template='{{.data.user | base64decode}}') \
     --tsb-admin-password "$TSB_ADMIN_PASS" \
     --allow-defaults \
     >/tmp/mp-secrets-"$ORG".yaml
