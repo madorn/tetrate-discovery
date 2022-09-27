@@ -1,0 +1,48 @@
+kind: Elasticsearch
+apiVersion: elasticsearch.k8s.elastic.co/v1
+metadata:
+  name: tsb
+  namespace: tsb
+spec:
+  version: 7.10.0
+  http:
+    service:
+      spec:
+        type: LoadBalancer
+  nodeSets:
+    - name: default
+      config:
+        node.roles:
+          - master
+          - data
+        node.attr.attr_name: attr_value
+        node.store.allow_mmap: false
+      podTemplate:
+        metadata:
+          labels:
+            foo: bar
+        spec:
+          containers:
+            - name: elasticsearch
+              resources:
+                requests:
+                  memory: 4Gi
+                  cpu: 1
+                limits:
+                  memory: 4Gi
+                  cpu: 2
+      count: 3
+---
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+ name: tsb
+spec:
+ version: 7.10.0
+ count: 1
+ elasticsearchRef:
+   name: tsb
+ http:
+   service:
+     spec:
+       type: LoadBalancer
