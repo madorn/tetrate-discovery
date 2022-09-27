@@ -44,12 +44,12 @@ if ! kubectl -n "$TSB_NS" rollout status deployment/envoy 2>/dev/null; then
     kubectl apply -f /tmp/cert-manager.yaml
     # kubectl wait -n "$TSB_NS" --for=condition=Ready --timeout=10m certificate/tsb-certs 2>/dev/null
     tctl install manifest management-plane-secrets \
-    --elastic-password $(kubectl -n openshift-operators get secrets elasticsearch-sample-es-elastic-user -o go-template='{{.data.elastic | base64decode}}') \
+    --elastic-password $(kubectl -n tsb get secrets elasticsearch-sample-es-elastic-user -o go-template='{{.data.elastic | base64decode}}') \
     --elastic-username elastic \
     --ldap-bind-dn cn=admin,dc=tetrate,dc=io \
     --ldap-bind-password admin \
-    --postgres-password $(kubectl -n openshift-operators get secrets tsb-pguser-tsb -o go-template='{{.data.password | base64decode}}') \
-    --postgres-username $(kubectl -n openshift-operators get secrets tsb-pguser-tsb -o go-template='{{.data.user | base64decode}}') \
+    --postgres-password $(kubectl -n tsb get secrets tsb-pguser-tsb -o go-template='{{.data.password | base64decode}}') \
+    --postgres-username $(kubectl -n tsb get secrets tsb-pguser-tsb -o go-template='{{.data.user | base64decode}}') \
     --tsb-admin-password "$TSB_ADMIN_PASS" \
     --allow-defaults \
     >/tmp/mp-secrets-"$ORG".yaml
