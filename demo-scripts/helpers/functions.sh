@@ -225,14 +225,14 @@ function createAWSCluster() {
 function installCertManager() {
     echo "Install cert manager" >&2
     
-#    if ! kubectl -n openshift-cert-manager rollout status deployment/cert-manager 2>/dev/null;
-#   then
-#       kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.7.2/cert-manager.yaml 2>/dev/null
-#       kubectl --namespace cert-manager create secret generic prod-route53-credentials-secret \
-#       --from-literal="secret-access-key=$ROUTE53_SECRET" 2>/dev/null
-#    else
-#        echo "Cert Manager Deployment already exists" >&2
-#    fi
+    if ! kubectl -n openshift-cert-manager rollout status deployment/cert-manager 2>/dev/null;
+    then
+        kubectl apply --validate=false -f "$(cat "$ROOT"/templates/ocp-cert-manager-sub.yaml)" >/dev/null 2>/dev/null
+        kubectl --namespace openshift-cert-manager create secret generic prod-route53-credentials-secret \
+        --from-literal="secret-access-key=$ROUTE53_SECRET" 2>/dev/null
+    else
+         echo "Cert Manager Deployment already exists" >&2
+    fi
     echo "adding flag for ExperimentalCertificateSigningRequestControllers" >&2
     kubectl -n openshift-cert-manager patch deployments.apps/cert-manager \
     --type merge \
