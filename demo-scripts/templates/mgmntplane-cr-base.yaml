@@ -14,5 +14,5 @@ spec:
       name: $(kubectl -n tsb get secrets tsb-pguser-tsb -o go-template='{{.data.dbname | base64decode}}')
   telemetryStore:
     elastic:
-      host: $(kubectl -n tsb get svc elasticsearch-sample-es-http -o go-template='{{.spec.clusterIP}}')
+      host: $(kubectl -n tsb get svc tsb-es-http -o go-template='{{.spec.clusterIP}}')
       port: 9200
