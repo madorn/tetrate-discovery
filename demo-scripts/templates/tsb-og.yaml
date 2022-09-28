@@ -1,0 +1,9 @@
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: tsb
+  namespace: tsb
+spec:
+  targetNamespaces:
+  - tsb
+  upgradeStrategy: Default
