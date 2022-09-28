@@ -73,7 +73,7 @@ if ! kubectl -n "$TSB_NS" rollout status deployment/envoy 2>/dev/null; then
 
         
     tctl install manifest management-plane-secrets \
-    --elastic-password $(kubectl -n tsb get secrets elasticsearch-sample-es-elastic-user -o go-template='{{.data.elastic | base64decode}}') \
+    --elastic-password $(kubectl -n tsb get secrets tsb-es-elastic-user -o go-template='{{.data.elastic | base64decode}}') \
     --elastic-username elastic \
     --ldap-bind-dn cn=admin,dc=tetrate,dc=io \
     --ldap-bind-password admin \
