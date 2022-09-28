@@ -232,7 +232,7 @@ function installCertManager() {
         kubectl apply --validate=false -f /tmp/ocp-cert-manager-og.yaml
         eval "echo \"$(cat "$ROOT"/templates/ocp-cert-manager-sub.yaml)\"" > /tmp/ocp-cert-manager-sub.yaml
         kubectl apply --validate=false -f /tmp/ocp-cert-manager-sub.yaml
-        sleep 20
+        sleep 40
         kubectl -n openshift-cert-manager-operator rollout status deployment/cert-manager-operator
         sleep 10
         kubectl -n openshift-cert-manager rollout status deployment/cert-manager
