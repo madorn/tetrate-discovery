@@ -50,32 +50,33 @@ if ! kubectl -n "$TSB_NS" rollout status deployment/envoy 2>/dev/null; then
     echo "Install Postgres Operator"
     eval "echo \"$(cat "$ROOT"/templates/pg-sub.yaml)\"" > /tmp/pg-sub.yaml
     kubectl apply --validate=false -f /tmp/pg-sub.yaml
-    sleep 10
+    sleep 20
     kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deployment/pgo
     
     echo "Install Postgres CR"
     eval "echo \"$(cat "$ROOT"/templates/pg-cr.yaml)\"" > /tmp/pg-cr.yaml
     kubectl apply --validate=false -f /tmp/pg-cr.yaml
-    sleep 10
+    sleep 20
     kubectl wait -n "$TSB_NS" --for=condition=PGBackRestRepoHostReady --timeout=4m postgrescluster/tsb 2>/dev/null
     
     echo "Install ElasticSearch Operator"
     eval "echo \"$(cat "$ROOT"/templates/es-sub.yaml)\"" > /tmp/es-sub.yaml
     kubectl apply --validate=false -f /tmp/es-sub.yaml
-    sleep 10
+    sleep 20
     kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deployment/elastic-operator 2>/dev/null
     
     echo "Install ElasticSearch & Kibana CR"
     eval "echo \"$(cat "$ROOT"/templates/es-cr.yaml)\"" > /tmp/es-cr.yaml
     kubectl apply --validate=false -f /tmp/es-cr.yaml
-    sleep 10
+    sleep 20
     kubectl wait -n "$TSB_NS" --for=condition=ReconciliationComplete --timeout=4m elasticsearch/tsb 2>/dev/null
     kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deploy/tsb-kb 2>/dev/null
 
 
     eval "echo \"$(cat "$ROOT"/templates/mgmntplane-cr-base.yaml)\"" >/tmp/mgmntplane-cr.yaml
 
-        
+    kubectl get secret tsb-es-http-certs-internal -o json jq '.metadata.name = "es-certs"' | kubectl apply -f -
+
     tctl install manifest management-plane-secrets \
     --elastic-password $(kubectl -n tsb get secrets tsb-es-elastic-user -o go-template='{{.data.elastic | base64decode}}') \
     --elastic-username elastic \
