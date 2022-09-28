@@ -227,17 +227,25 @@ function installCertManager() {
     
     if ! kubectl -n openshift-cert-manager rollout status deployment/cert-manager 2>/dev/null;
     then
-        kubectl apply --validate=false -f "$(cat "$ROOT"/templates/ocp-cert-manager-sub.yaml)" >/dev/null 2>/dev/null
-        kubectl --namespace openshift-cert-manager create secret generic prod-route53-credentials-secret \
+        kubectl create namespace openshift-cert-manager-operator
+        eval "echo \"$(cat "$ROOT"/templates/ocp-cert-manager-og.yaml)\"" > /tmp/ocp-cert-manager-og.yaml
+        kubectl apply --validate=false -f /tmp/ocp-cert-manager-og.yaml
+        eval "echo \"$(cat "$ROOT"/templates/ocp-cert-manager-sub.yaml)\"" > /tmp/ocp-cert-manager-sub.yaml
+        kubectl apply --validate=false -f /tmp/ocp-cert-manager-sub.yaml
+        sleep 10
+        kubectl -n openshift-cert-manager-operator rollout status deployment/cert-manager-operator
+        sleep 5
+        kubectl -n openshift-cert-manager rollout status deployment/cert-manager
+        kubectl -n openshift-cert-manager create secret generic prod-route53-credentials-secret \
         --from-literal="secret-access-key=$ROUTE53_SECRET" 2>/dev/null
     else
          echo "Cert Manager Deployment already exists" >&2
     fi
     echo "adding flag for ExperimentalCertificateSigningRequestControllers" >&2
-    kubectl -n openshift-cert-manager patch deployments.apps/cert-manager \
+    kubectl patch certmanager.operator.openshift.io/cluster \
     --type merge \
     --patch "$(cat "$ROOT"/templates/cert-manager-flags.yaml)" >/dev/null 2>/dev/null
-    kubectl rollout restart deployment -n openshift-cert-manager >/dev/null 2>/dev/null
+    kubectl -n openshift-cert-manager rollout status deployment/cert-manager >/dev/null 2>/dev/null
 }
 function installECK() {
     echo "Deploying Elastic Cloud on Kubernetes (ECK)" >&2
