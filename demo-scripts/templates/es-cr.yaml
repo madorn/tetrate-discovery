@@ -37,6 +37,7 @@ apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
 metadata:
  name: tsb
+ namespace: tsb
 spec:
  version: 7.10.0
  count: 1
