@@ -9,10 +9,13 @@ spec:
   organization: $ORG
   dataStore:
     postgres:
-      host: $(kubectl -n tsb get secrets tsb-pguser-tsb -o go-template='{{.data.host | base64decode}}')
-      port: $(kubectl -n tsb get secrets tsb-pguser-tsb -o go-template='{{.data.port | base64decode}}')
+      address: $(kubectl -n tsb get secrets tsb-pguser-tsb -o go-template='{{.data.host | base64decode}}'):$(kubectl -n tsb get secrets tsb-pguser-tsb -o go-template='{{.data.port | base64decode}}')
       name: $(kubectl -n tsb get secrets tsb-pguser-tsb -o go-template='{{.data.dbname | base64decode}}')
+      sslMode: disable
   telemetryStore:
     elastic:
       host: $(kubectl -n tsb get svc tsb-es-http -o go-template='{{.spec.clusterIP}}')
       port: 9200
+      protocol: https
+      selfSigned: true
+      version: 7
