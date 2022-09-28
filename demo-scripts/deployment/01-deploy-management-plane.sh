@@ -29,8 +29,6 @@ OCP_DOMAIN=$(oc get ingresses.config/cluster -o jsonpath={.spec.domain})
 
 kubectl wait -n openshift-cert-manager --for=condition=Available --timeout=4m deployment/cert-manager-webhook 2>/dev/null
 
-eval "echo \"$(cat "$ROOT"/templates/mgmntplane-cr-base.yaml)\"" >/tmp/mgmntplane-cr.yaml
-
 if ! kubectl -n "$TSB_NS" rollout status deployment/tsb-operator-management-plane 2>/dev/null; then
     tctl install manifest management-plane-operator \
     --registry "$REPO_MP" >/tmp/managementplaneoperator.yaml
@@ -44,23 +42,34 @@ if ! kubectl -n "$TSB_NS" rollout status deployment/envoy 2>/dev/null; then
     kubectl apply -f /tmp/cert-manager.yaml
     # kubectl wait -n "$TSB_NS" --for=condition=Ready --timeout=10m certificate/tsb-certs 2>/dev/null
     
-    
+
+    echo "Install an OperatorGroup to tsb namespace"
+    eval "echo \"$(cat "$ROOT"/templates/tsb-og.yaml)\"" > /tmp/tsb-og.yaml
+    kubectl apply --validate=false -f /tmp/tsb-og.yaml
+
     echo "Install Postgres Operator"
-    kubectl apply --validate=false -f "$(cat "$ROOT"/templates/pg-sub.yaml)" >/dev/null 2>/dev/null
-    kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deployment/pgo 2>/dev/null
+    eval "echo \"$(cat "$ROOT"/templates/pg-sub.yaml)\"" > /tmp/pg-sub.yaml
+    kubectl apply --validate=false -f /tmp/pg-sub.yaml
+    kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deployment/pgo
     
     echo "Install Postgres CR"
-    kubectl apply --validate=false -f "$(cat "$ROOT"/templates/pg-cr.yaml)" >/dev/null 2>/dev/null
+    eval "echo \"$(cat "$ROOT"/templates/pg-cr.yaml)\"" > /tmp/pg-cr.yaml
+    kubectl apply --validate=false -f /tmp/pg-cr.yaml
     kubectl wait -n "$TSB_NS" --for=condition=PGBackRestRepoHostReady --timeout=4m postgrescluster/tsb 2>/dev/null
     
     echo "Install ElasticSearch Operator"
-    kubectl apply --validate=false -f "$(cat "$ROOT"/templates/es-sub.yaml)" >/dev/null 2>/dev/null
+    eval "echo \"$(cat "$ROOT"/templates/es-sub.yaml)\"" > /tmp/es-sub.yaml
+    kubectl apply --validate=false -f /tmp/es-sub.yaml
     kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deployment/elastic-operator 2>/dev/null
     
     echo "Install ElasticSearch & Kibana CR"
-    kubectl apply --validate=false -f "$(cat "$ROOT"/templates/es-cr.yaml)" >/dev/null 2>/dev/null
+    eval "echo \"$(cat "$ROOT"/templates/es-cr.yaml)\"" > /tmp/es-cr.yaml
+    kubectl apply --validate=false -f /tmp/es-cr.yaml
     kubectl wait -n "$TSB_NS" --for=condition=ReconciliationComplete --timeout=4m elasticsearch/tsb 2>/dev/null
     kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deploy/tsb-kb 2>/dev/null
+
+
+    eval "echo \"$(cat "$ROOT"/templates/mgmntplane-cr-base.yaml)\"" >/tmp/mgmntplane-cr.yaml
 
         
     tctl install manifest management-plane-secrets \
