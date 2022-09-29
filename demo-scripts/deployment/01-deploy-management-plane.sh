@@ -50,25 +50,25 @@ if ! kubectl -n "$TSB_NS" rollout status deployment/envoy 2>/dev/null; then
     echo "Install Postgres Operator"
     eval "echo \"$(cat "$ROOT"/templates/pg-sub.yaml)\"" > /tmp/pg-sub.yaml
     kubectl apply --validate=false -f /tmp/pg-sub.yaml
-    sleep 20
+    sleep 30
     kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deployment/pgo
     
     echo "Install Postgres CR"
     eval "echo \"$(cat "$ROOT"/templates/pg-cr.yaml)\"" > /tmp/pg-cr.yaml
     kubectl apply --validate=false -f /tmp/pg-cr.yaml
-    sleep 20
+    sleep 30
     kubectl wait -n "$TSB_NS" --for=condition=PGBackRestRepoHostReady --timeout=4m postgrescluster/tsb 2>/dev/null
     
     echo "Install ElasticSearch Operator"
     eval "echo \"$(cat "$ROOT"/templates/es-sub.yaml)\"" > /tmp/es-sub.yaml
     kubectl apply --validate=false -f /tmp/es-sub.yaml
-    sleep 20
+    sleep 30
     kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deployment/elastic-operator 2>/dev/null
     
     echo "Install ElasticSearch & Kibana CR"
     eval "echo \"$(cat "$ROOT"/templates/es-cr.yaml)\"" > /tmp/es-cr.yaml
     kubectl apply --validate=false -f /tmp/es-cr.yaml
-    sleep 20
+    sleep 30
     kubectl wait -n "$TSB_NS" --for=condition=ReconciliationComplete --timeout=4m elasticsearch/tsb 2>/dev/null
     kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deploy/tsb-kb 2>/dev/null
 
