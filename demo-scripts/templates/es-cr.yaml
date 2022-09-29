@@ -5,10 +5,15 @@ metadata:
   namespace: tsb
 spec:
   version: 7.10.0
-  http:
-    service:
-      spec:
-        type: LoadBalancer
+#   http:
+#    service:
+#      spec:
+#        type: LoadBalancer
+#    tls:
+#      selfSignedCertificate:
+#        subjectAltNames:
+#        - ip: 
+#        - dns: ${DNS_DOMAIN}
   nodeSets:
     - name: default
       config:
