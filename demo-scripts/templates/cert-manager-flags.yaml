@@ -1,21 +1,12 @@
 spec:
-  template:
-    spec:
-      containers:      
-      - args:
+  logLevel: Normal
+  managementState: Managed
+  observedConfig: null
+  operatorLogLevel: Normal
+  unsupportedConfigOverrides:
+    controller:
+      args:
         - --v=2
         - --cluster-resource-namespace=$(POD_NAMESPACE)
         - --leader-election-namespace=kube-system
         - --feature-gates=ExperimentalCertificateSigningRequestControllers=true
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-        image: registry.redhat.io/cert-manager/jetstack-cert-manager-rhel8@sha256:988870161bbc56ad2793b8563eb0ddb00c4e108b0d6bd604602c67ff4ff88ae8
-        imagePullPolicy: IfNotPresent
-        name: cert-manager
-        ports:
-        - containerPort: 9402
-          protocol: TCP        
