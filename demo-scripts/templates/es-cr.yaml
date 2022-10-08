@@ -38,7 +38,7 @@ metadata:
  name: tsb
  namespace: tsb
 spec:
- version: 7.9.0
+ version: 7.10.0
  count: 1
  elasticsearchRef:
    name: tsb
