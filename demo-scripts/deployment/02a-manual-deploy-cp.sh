@@ -74,6 +74,7 @@ read -r -d '' OPERATOR_PATCH << EOM
 # for Openshift the memory limit needs to be patched for the operator
   oc -n istio-system patch deployment tsb-operator-control-plane --type='json' -p='[{"op": "add", "path": "/spec/template/spec/containers/0/resources/limits", "memory": "512Mi"}]'
   oc -n istio-system set env deployment/tsb-operator-control-plane MP_CUSTOM_SNI=$BRIDGE_ADDRESS_TSB
+  oc -n istio-system set env deployment/tsb-operator-control-plane GODEBUG="x509sha1=1"
   oc -n istio-system apply -f $ROOT/templates/oc_NetworkAttach.yaml
 EOM
 fi
