@@ -77,7 +77,7 @@ if ! kubectl -n "$TSB_NS" rollout status deployment/envoy 2>/dev/null; then
 
     kubectl get secret -n tsb tsb-es-http-certs-public -o go-template='{{ index .data "ca.crt" | base64decode }}' >/tmp/es-ca.crt
 
-    kubectl create secret generic es-certs --from-file=ca.crt=/tmp/es-ca.crt
+    kubectl -n tsb create secret generic es-certs --from-file=ca.crt=/tmp/es-ca.crt
 
     tctl install manifest management-plane-secrets \
     --elastic-password $(kubectl -n tsb get secrets tsb-es-elastic-user -o go-template='{{.data.elastic | base64decode}}') \
