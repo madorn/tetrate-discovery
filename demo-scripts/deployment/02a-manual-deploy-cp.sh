@@ -57,6 +57,10 @@ if ${ECK_STACK_ENABLED}; then
 read -r -d '' ES_STRING << EOM
 # ca.crt and Elastic for FrontEnovy Elasticsearch
   oc -n istio-system create secret generic es-certs --from-file=ca.crt=/tmp/es-ca.crt
+# ca.crt for management-plane should be copied to istio-system
+kubectl -n istio-system create secret generic mp-certs \
+    --from-literal=ca.crt="$(kubectl -n tsb get secret tsb-certs -o go-template='{{ index .data "ca.crt" | base64decode}}')" \
+    2>/dev/null;
 EOM
 else
 read -r -d '' ES_STRING << EOM
