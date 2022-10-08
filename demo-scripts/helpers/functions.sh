@@ -104,6 +104,16 @@ function tctlClusterManifests() {
         >/tmp/cp-secrets-"${CLUSTER}".yaml
         ES_FQDN=$(getSvcAddr "tsb-es-http" "tsb")
         export ES_FQDN
+           TCCIP=$(getTCCIP)
+            while [[ -z ${TCCIP} ]]; do
+                TCCIP=$(getTCCIP)
+                sleep 5
+            done
+            BRIDGE_ADDRESS_LB="$TCCIP"
+            OCP_DOMAIN=$(oc get ingresses.config/cluster -o jsonpath={.spec.domain})
+            BRIDGE_ADDRESS_TSB=tsb."$OCP_DOMAIN"
+            PORT_LB="8443"
+            PORT_TSB="443"
         eval "echo \"$(cat "$ROOT"/templates/cp-site-eck.yaml)\"" >/tmp/cp-site-"${CLUSTER}".yaml
     else
         if [[ ${CLUSTER_PLATFORM[$MP_CLUSTER]} =~ ^(oc|openshift|ocp)$ ]]; then
