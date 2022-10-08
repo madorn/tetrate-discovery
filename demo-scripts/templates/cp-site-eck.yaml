@@ -12,7 +12,8 @@ spec:
       selfSigned: true
       version: 7
   managementPlane:
-    host: $DEPLOYMENT_NAME-tsb.$DNS_DOMAIN
-    port: 8443
+    host: $BRIDGE_ADDRESS_LB
+    port: $PORT_LB
     clusterName: $CLUSTER
-    organization: $DEPLOYMENT_TYPE-$DEPLOYMENT_NAME-org
+    organization: $ORG
+    selfSigned: true
