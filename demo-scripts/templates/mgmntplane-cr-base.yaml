@@ -16,5 +16,5 @@ spec:
     elastic:
       host: $(kubectl -n tsb get svc tsb-es-http -o go-template='{{.metadata.name}}')
       port: 9200
-      protocol: http
+      protocol: https
       version: 7
