@@ -31,9 +31,9 @@ spec:
             value:
               - -c
               - |
-              - cd /tmp
-              - cat /var/run/secrets/elasticsearch.io/ca.crt | awk '/BEGIN/,/END/{ if(/BEGIN/){a++}; out="cert"a".pem"; print >out}'
-              - for file in cert*.pem; do keytool -import -noprompt -keystore $TRUSTSTORE_JKS -file $file -storepass $PASSWORD -alias service-$file; done
+                cd /tmp
+                cat /var/run/secrets/elasticsearch.io/ca.crt | awk '/BEGIN/,/END/{ if(/BEGIN/){a++}; out="cert"a".pem"; print >out}'
+                for file in cert*.pem; do keytool -import -noprompt -keystore $TRUSTSTORE_JKS -file $file -storepass $PASSWORD -alias service-$file; done
     zipkin:
       kubeSpec:
         overlays:
@@ -45,6 +45,6 @@ spec:
             value:
               - -c
               - |
-              - cd /tmp
-              - cat /var/run/secrets/elasticsearch.io/ca.crt | awk '/BEGIN/,/END/{ if(/BEGIN/){a++}; out="cert"a".pem"; print >out}'
-              - for file in cert*.pem; do keytool -import -noprompt -keystore $TRUSTSTORE_JKS -file $file -storepass $PASSWORD -alias service-$file; done
+                cd /tmp
+                cat /var/run/secrets/elasticsearch.io/ca.crt | awk '/BEGIN/,/END/{ if(/BEGIN/){a++}; out="cert"a".pem"; print >out}'
+                for file in cert*.pem; do keytool -import -noprompt -keystore $TRUSTSTORE_JKS -file $file -storepass $PASSWORD -alias service-$file; done
