@@ -94,15 +94,15 @@ function tctlClusterManifests() {
     --cluster  $CLUSTER\
     > /tmp/cluster-$CLUSTER-service-account.jwk
     if ${ECK_STACK_ENABLED}; then
-        kubectl get secret -n es tsb-es-http-certs-public -o go-template='{{ index .data "ca.crt" | base64decode }}' >/tmp/es-ca.crt
-        kubectl get secret -n es tsb-es-elastic-user -o jsonpath="{.data.elastic}" > /tmp/elastic-creds.data
+        kubectl get secret -n tsb tsb-es-http-certs-public -o go-template='{{ index .data "ca.crt" | base64decode }}' >/tmp/es-ca.crt
+        kubectl get secret -n tsb tsb-es-elastic-user -o jsonpath="{.data.elastic}" > /tmp/elastic-creds.data
         sleep 60
         tctl install manifest control-plane-secrets --cluster "$CLUSTER" \
         --elastic-username elastic \
         --cluster-service-account="$(cat /tmp/cluster-$CLUSTER-service-account.jwk)" \
-        --elastic-password "$(kubectl get secret -n es tsb-es-elastic-user -o jsonpath="{.data.elastic}" | base64 -d)" \
+        --elastic-password "$(kubectl get secret -n tsb tsb-es-elastic-user -o jsonpath="{.data.elastic}" | base64 -d)" \
         >/tmp/cp-secrets-"${CLUSTER}".yaml
-        ES_FQDN=$(getSvcAddr "tsb-es-http" "es")
+        ES_FQDN=$(getSvcAddr "tsb-es-http" "tsb")
         export ES_FQDN
         eval "echo \"$(cat "$ROOT"/templates/cp-site-eck.yaml)\"" >/tmp/cp-site-"${CLUSTER}".yaml
     else
