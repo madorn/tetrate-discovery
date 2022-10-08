@@ -17,4 +17,5 @@ spec:
       host: $(kubectl -n tsb get svc tsb-es-http -o go-template='{{.metadata.name}}')
       port: 9200
       protocol: https
+      selfSigned: true
       version: 7
