@@ -66,8 +66,8 @@ if ! kubectl -n "$TSB_NS" rollout status deployment/envoy 2>/dev/null; then
     kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deployment/elastic-operator 2>/dev/null
     
     echo "Install ElasticSearch & Kibana CR"
-    eval "echo \"$(cat "$ROOT"/templates/es-cr.yaml)\"" > /tmp/es-cr.yaml
-    kubectl apply --validate=false -f /tmp/es-cr.yaml
+    eval "echo \"$(cat "$ROOT"/templates/eck.yaml)\"" > /tmp/eck.yaml
+    kubectl apply --validate=false -f /tmp/eck.yaml
     sleep 30
     kubectl wait -n "$TSB_NS" --for=condition=ReconciliationComplete --timeout=4m elasticsearch/tsb 2>/dev/null
     kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deploy/tsb-kb 2>/dev/null
