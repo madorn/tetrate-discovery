@@ -6,6 +6,34 @@
       centralAuthModes:
         jwt: true
         mutualTls: false
+    oap:
+      kubeSpec:
+        overlays:
+        - apiVersion: apps/v1
+          kind: Deployment
+          name: oap
+          patches:
+          - path: spec.template.spec.initContainers.[name:pem-to-truststore].args
+            value:
+              - -c
+              - |
+                cd /tmp
+                cat /var/run/secrets/elasticsearch.io/ca.crt | awk '/BEGIN/,/END/{ if(/BEGIN/){a++}; out="cert"a".pem"; print >out}'
+                for file in cert*.pem; do keytool -import -noprompt -keystore $TRUSTSTORE_JKS -file $file -storepass $PASSWORD -alias service-$file; done
+    zipkin:
+      kubeSpec:
+        overlays:
+        - apiVersion: apps/v1
+          kind: Deployment
+          name: zipkin
+          patches:
+          - path: spec.template.spec.initContainers.[name:pem-to-truststore].args
+            value:
+              - -c
+              - |
+                cd /tmp
+                cat /var/run/secrets/elasticsearch.io/ca.crt | awk '/BEGIN/,/END/{ if(/BEGIN/){a++}; out="cert"a".pem"; print >out}'
+                for file in cert*.pem; do keytool -import -noprompt -keystore $TRUSTSTORE_JKS -file $file -storepass $PASSWORD -alias service-$file; done
   tokenIssuer:
     jwt:
       expiration: 3600s
