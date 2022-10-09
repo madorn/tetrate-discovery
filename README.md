@@ -1,4 +1,6 @@
-# TSB Install via Script - Overrides Demo Tetrate Dependencies and uses Certified Operators in Openshift's OperatorHub
+# TSB Install via Script
+
+## This fork overrides the demo Tetrate dependencies and uses Certified Operators found in Openshift's OperatorHub
 
 
 - [Sync Images](#sync-images)
