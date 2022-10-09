@@ -39,6 +39,7 @@ Configure `demo-scripts/variables/coreos.env`
 - line 14 is the DNS_DOMAIN, obtained by (this must be precise): 
    -  `kubectl get ingresses.config/cluster --template='{{.spec.domain}}' | sed 's/apps.//g' | cut -f2-4 -d"."`
 - line 24 should be the OCP kubeadmin passwords in an array. (again, only the first element)
+- `ECK_STACK_ENABLED` should be set to `true` - we will be using the certified elasticsearch operator.
 
 Download and install [tctl](https://docs.tetrate.io/service-bridge/1.5.x/en-us/reference/cli/guide/index#installation), make sure you are installing `1.5.0` so that the images that have been pushed work correctly.
 
