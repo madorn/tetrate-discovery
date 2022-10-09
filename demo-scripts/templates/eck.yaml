@@ -16,32 +16,12 @@ spec:
        node.master: true
        node.data: false
        node.ingest: false
-     podTemplate:
-        spec:
-          containers:
-            - env:
-                - name: ES_JAVA_OPTS
-                  value: -Xmx4g -Xms4g
-              name: elasticsearch
-              resources:
-                limits:
-                  memory: 6Gi
    - name: data
      count: 3
      config:
        node.master: false
        node.data: true
        node.ingest: true
-     podTemplate:
-        spec:
-          containers:
-            - env:
-                - name: ES_JAVA_OPTS
-                  value: -Xmx4g -Xms4g
-              name: elasticsearch
-              resources:
-                limits:
-                  memory: 6Gi
      volumeClaimTemplates:
        - metadata:
            name: elasticsearch-data
@@ -50,7 +30,7 @@ spec:
              - ReadWriteOnce
            resources:
              requests:
-               storage: 1Gi
+               storage: 5Gi
 ---
 apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
