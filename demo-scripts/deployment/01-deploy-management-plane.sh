@@ -72,6 +72,9 @@ if ! kubectl -n "$TSB_NS" rollout status deployment/envoy 2>/dev/null; then
     kubectl wait -n "$TSB_NS" --for=condition=ReconciliationComplete --timeout=4m elasticsearch/tsb 2>/dev/null
     kubectl wait -n "$TSB_NS" --for=condition=Available --timeout=4m deploy/tsb-kb 2>/dev/null
 
+    echo "Create Network Policy for Elasticsearch"
+    eval "echo \"$(cat "$ROOT"/templates/es-network-policy.yaml)\"" >/tmp/es-network-policy.yaml
+    kubectl apply -f /tmp/es-network-policy.yaml 2>/dev/null
 
     eval "echo \"$(cat "$ROOT"/templates/mgmntplane-cr-base.yaml)\"" >/tmp/mgmntplane-cr.yaml
 
